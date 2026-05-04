@@ -1,16 +1,8 @@
-<script>
-    export default{
-
-    }
+<script setup>
+  import Navbar from './components/Navbar.vue';
+  import Hero from './components/Hero.vue';
 </script>
 <template>
-  <h1>Vue Jobs</h1>
-  <p v-if="status">User is active! </p>
-  <p v-else>User is not active!</p>
-  <button  @click="toggleStatus"> change status</button>
-  <li>
-    <ul v-for="task in tasks" key="task">{{ task }}</ul>
-  </li>
-  <a :href="link">Click for google</a>
+  <Navbar />
+  <Hero title="Test-title"/>
 </template>
-
