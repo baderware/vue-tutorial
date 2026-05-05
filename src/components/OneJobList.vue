@@ -5,20 +5,22 @@ import { ref,computed } from 'vue';
 const props=defineProps({
     job:Object,
 });
-const showFullDesc=ref(false);
-const toggleDesc=()=>{
-    showFullDesc.value=!showFullDesc.value;
-}
-const truncatedDesc= computed(()=>{
-    let desc=props.job.description;
-    if(!showFullDesc.value){
-        desc=desc.substring(0,90)+ '...';
-    }
-    return desc;
-})
+const showFullDescription = ref(false);
+
+const toggleFullDescription = () => {
+  showFullDescription.value = !showFullDescription.value;
+};
+const truncatedDescription = computed(() => {
+  const description = props.job?.description || "";
+
+  return showFullDescription.value
+    ? description
+    : description.substring(0, 90) + "...";
+});
 </script>
 <template>
-   <div class="bg-white rounded-xl shadow-md relative">
+    <!-- waiting for the apì response before rendering  -->
+   <div v-if="job" class="bg-white rounded-xl shadow-md relative">
             <div class="p-4">
               <div class="mb-6">
                 <div class="text-gray-600 my-2">{{ job.type }}</div>
@@ -27,12 +29,12 @@ const truncatedDesc= computed(()=>{
 
               <div class="mb-5">
                  <div>
-                    {{ truncatedDesc}}
+                    {{ truncatedDescription}}
                  </div>
-                 <button v-if="!showFullDesc" @click="toggleDesc" class="text-green-500 hover:text-green-600">
+                 <button v-if="!showFullDescription" @click="toggleFullDescription" class="text-green-500 hover:text-green-600">
                     show full
                  </button>
-                 <button v-else @click="toggleDesc" class="text-green-500 hover:text-green-600">
+                 <button v-else @click="toggleFullDescription" class="text-green-500 hover:text-green-600">
                     show less
                  </button>
               </div>
