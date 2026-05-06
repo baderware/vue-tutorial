@@ -1,5 +1,58 @@
 <script setup>
+import axios from 'axios';
+import { reactive } from 'vue';
 import { RouterLink } from 'vue-router';
+import { useToast } from 'vue-toastification';
+import router from '@/router';
+
+
+const toast=useToast();
+const form=reactive({
+  type:'Full-Time',
+  title:'',
+  description:'',
+  salary:'',
+  location:'',
+  company:{
+    name:'',
+    description:'',
+    contactEmail:'',
+    contactPhone:''
+  }
+  
+})
+
+
+
+const handleSubmit=async()=>{
+  const newJob={
+  title:form.title,
+  type:form.type,
+  salary:form.salary,
+  location:form.location,
+  description:form.description,
+  company:{
+    name:form.company.name,
+    description:form.company.description,
+    contactEmail:form.company.contactEmail,
+    contactPhone:form.company.contactPhone
+  }
+}
+  try {
+    const response=await axios.post('/api/jobs',newJob)
+toast.success("job added successfully!", {
+  timeout: 2000
+})
+router.push({
+  path: `/job/${response.data.id}`,
+  query: { created: 'true' }
+})
+  } catch (error) {
+    console.log("can not add the job",error);
+    toast.error("job failed to add !!!!")
+  }
+}
+
 </script>
 <template>
     <section class="bg-green-50">
@@ -7,7 +60,7 @@ import { RouterLink } from 'vue-router';
         <div
           class="bg-white px-6 py-8 mb-4 shadow-md rounded-md border m-4 md:m-0"
         >
-          <form>
+          <form  @submit.prevent="handleSubmit">
             <h2 class="text-3xl text-center font-semibold mb-6">Add Job</h2>
 
             <div class="mb-4">
@@ -15,6 +68,7 @@ import { RouterLink } from 'vue-router';
                 >Job Type</label
               >
               <select
+              v-model="form.type"
                 id="type"
                 name="type"
                 class="border rounded w-full py-2 px-3"
@@ -32,6 +86,7 @@ import { RouterLink } from 'vue-router';
                 >Job Listing Name</label
               >
               <input
+              v-model="form.title"
                 type="text"
                 id="name"
                 name="name"
@@ -47,6 +102,7 @@ import { RouterLink } from 'vue-router';
                 >Description</label
               >
               <textarea
+                v-model="form.description"
                 id="description"
                 name="description"
                 class="border rounded w-full py-2 px-3"
@@ -60,6 +116,7 @@ import { RouterLink } from 'vue-router';
                 >Salary</label
               >
               <select
+              v-model="form.salary"
                 id="salary"
                 name="salary"
                 class="border rounded w-full py-2 px-3"
@@ -84,6 +141,7 @@ import { RouterLink } from 'vue-router';
                 Location
               </label>
               <input
+                v-model="form.location"
                 type="text"
                 id="location"
                 name="location"
@@ -100,6 +158,7 @@ import { RouterLink } from 'vue-router';
                 >Company Name</label
               >
               <input
+              v-model="form.company.name"
                 type="text"
                 id="company"
                 name="company"
@@ -115,6 +174,7 @@ import { RouterLink } from 'vue-router';
                 >Company Description</label
               >
               <textarea
+              v-model="form.company.description"
                 id="company_description"
                 name="company_description"
                 class="border rounded w-full py-2 px-3"
@@ -130,6 +190,7 @@ import { RouterLink } from 'vue-router';
                 >Contact Email</label
               >
               <input
+                v-model="form.company.contactEmail"
                 type="email"
                 id="contact_email"
                 name="contact_email"
@@ -145,6 +206,7 @@ import { RouterLink } from 'vue-router';
                 >Contact Phone</label
               >
               <input
+              v-model="form.company.contactPhone"
                 type="tel"
                 id="contact_phone"
                 name="contact_phone"
